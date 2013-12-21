@@ -5,7 +5,7 @@
 // , "description" : "iview for Taberareloo"
 // , "include"     : ["background", "content"]
 // , "match"       : ["http://yungsang.github.io/iview-for-taberareloo/*"]
-// , "version"     : "1.8.0"
+// , "version"     : "1.8.1"
 // , "downloadURL" : "http://yungsang.github.io/iview-for-taberareloo/iview.for.taberareloo.tbrl.js"
 // }
 // ==/Taberareloo==
@@ -36,8 +36,21 @@
   var settings = {};
 
   if (inContext('background')) {
-    if (!Patches['util.wedata.tbrl.js']) {
-      Patches.install('https://raw.github.com/YungSang/patches-for-taberareloo/master/utils/util.wedata.tbrl.js', true);
+    var patch = Patches['util.wedata.tbrl.js'];
+    if (patch) {
+      var preference = Patches.getPreferences(patch.name) || {};
+      if (preference.disabled) {
+        Patches.setPreferences(patch.name, update(preference, {
+          disabled : false
+        }));
+        Patches.loadAndRegister(patch.fileEntry, patch.metadata);
+      }
+    }
+    else {
+      Patches.install(
+        'https://raw.github.com/YungSang/patches-for-taberareloo/master/utils/util.wedata.tbrl.js',
+        true
+      );
     }
 
     Menus._register({
